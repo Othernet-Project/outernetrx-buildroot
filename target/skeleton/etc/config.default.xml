@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config>
+  <version>1</version>
+  <network>
+    <mode>dhcp</mode>
+    <address/>
+    <netmask/>
+    <gateway/>
+    <dns/>
+  </network>
+</config>

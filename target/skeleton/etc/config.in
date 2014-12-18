@@ -1,0 +1,19 @@
+#!/bin/sh
+
+CONFIG_XML=/mnt/persist/config.xml
+CONFIG_BAK=/mnt/persist/config.bak
+CONFIG_DEFAULT=/etc/config.default.xml
+
+# validate the config file
+check_config()
+{
+  if ! /usr/bin/xml val $CONFIG_XML > /dev/null ; then
+    if ! /usr/bin/xml val $CONFIG_BAK > /dev/null ; then
+      rm -f $CONFIG_BAK
+      cp $CONFIG_DEFAULT $CONFIG_XML
+    else
+      cp $CONFIG_BAK $CONFIG_XML
+    fi
+  fi
+  chmod g+w $CONFIG_XML
+}
