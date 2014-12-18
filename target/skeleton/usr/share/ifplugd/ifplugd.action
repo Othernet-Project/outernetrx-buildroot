@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PID_FILE=/var/run/dhcpc.eth0.pid
+
+ifup() {
+  /sbin/udhcpc -i eth0 -p $PID_FILE -t 1 -A 2 -S -b -R -F "OuternetRX"
+}
+
+ifdn() {
+  if [ -f $PID_FILE ]; then
+    /bin/kill $(cat $PID_FILE)
+    /bin/rm -f $PID_FILE
+  fi
+}
+
+case "$2" in
+  up)
+    ifup
+    ;;
+  down)
+    ifdn
+    ;;
+esac
+
+exit 0

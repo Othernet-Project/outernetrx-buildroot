@@ -1,0 +1,99 @@
+#!/bin/sh
+# Network up / down script
+
+# include common routines
+. /etc/config.in
+
+# make sure we have a config.xml
+check_config
+
+# Network up
+network_start() {
+  # bring up the loopback interface if it is not up already
+  if grep lo: /proc/net/dev > /dev/null ; then
+    if ! /sbin/ifconfig | grep "^lo" > /dev/null ; then
+      /sbin/ifconfig lo 127.0.0.1
+      /sbin/route add -net 127.0.0.0 netmask 255.0.0.0 lo
+    fi
+  fi
+
+  # Bring up wireless AP interface
+  echo 2 > /sys/module/dhd/parameters/op_mode
+  if ! /sbin/ifconfig | grep "^wlan0" > /dev/null ; then
+    /sbin/ifconfig wlan0 192.168.0.1 netmask 255.255.255.0
+  fi
+
+  # Enable forwarding
+  echo 1 > /proc/sys/net/ipv4/ip_forward
+
+  # Only respond to ARP for tht specific interface
+  echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore
+  echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce
+}
+
+# configure primary interface
+network_config() {
+  [ -f /var/run/ifplugd.eth0.pid ] && kill $(cat /var/run/ifplugd.eth0.pid) 2> /dev/null
+
+  echo -n > /etc/resolv.conf
+
+  MODE=$(/usr/bin/xml sel -t -m "/config/network"                 \
+                             -v "mode"                            \
+                             $CONFIG_XML | /usr/bin/xml unesc)
+  if [ $MODE == "static" ]; then
+    $(/usr/bin/xml sel -t -m "/config/network"                    \
+                          -o "/sbin/ifconfig eth0 " -v "address"  \
+                          -o " netmask " -v "netmask"             \
+                          $CONFIG_XML | /usr/bin/xml unesc)
+  else
+    /usr/sbin/ifplugd -i eth0 -f -r /usr/share/ifplugd/ifplugd.action -t 1 -u 0 -d 0
+  fi
+
+  # Setup default gateway
+  GATEWAY=$(/usr/bin/xml sel -t -m "/config/network" -v "gateway" $CONFIG_XML | /usr/bin/xml unesc)
+  if [ -n "$GATEWAY" ]; then
+    /sbin/route del default 2> /dev/null
+    /sbin/route add default gw $GATEWAY
+  fi
+
+  # Setup DNS
+  DNS=$(/usr/bin/xml sel -t -m "/config/network" -v "dns" $CONFIG_XML | /usr/bin/xml unesc)
+  if [ -n "$DNS" ]; then
+    echo "nameserver $DNS" >> /etc/resolv.conf
+  fi
+}
+
+# Network down
+network_stop() {
+  echo 0 > /proc/sys/net/ipv4/ip_forward
+
+  [ -f /var/run/ifplugd.eth0.pid ] && kill $(cat /var/run/ifplugd.eth0.pid) 2> /dev/null
+
+  /sbin/ifconfig eth0 0.0.0.0 down
+  /sbin/ifconfig wlan0 0.0.0.0 down
+
+  /sbin/route del default 2> /dev/null
+  echo -n > /etc/resolv.conf
+}
+
+case "$1" in
+  start)
+    network_start
+    network_config
+    ;;
+  stop)
+    network_stop
+    ;;
+  restart)
+    network_stop
+    /bin/sleep 1
+    network_start
+    network_config
+    ;;
+  reload)
+    network_config
+    ;;
+  *)
+    echo "usage: $0 {start|stop|restart|reload}"
+    ;;
+esac
