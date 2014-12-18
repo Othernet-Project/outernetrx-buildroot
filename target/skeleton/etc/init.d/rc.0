@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# As much as we'd like to do a proper shutdown, most likely the power was pulled
+
+# export a path to save us headaches when there is no path
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+# Save time to HW clock
+[ -f /dev/rtc ] && /sbin/hwclock -u -w
+
+# This never hurts
+/bin/sync
+
+# Unmount disks
+[ -x /etc/init.d/S20mountfs ] && /etc/init.d/S20mountfs stop
+
+# Stop the watchdog
+[ -x /etc/init.d/S15watchdog ] && /etc/init.d/S15watchdog stop
+
+# wait for all processes to finish
+wait

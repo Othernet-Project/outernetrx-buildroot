@@ -1,0 +1,8 @@
+# Root user may do anything
+root ALL=(ALL) ALL
+
+# Members of group sudo may execute commands
+%sudo ALL=(ALL) ALL
+
+# Include exceptions
+#includedir /etc/sudoers.d
