@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Start and Stop system logger
+
+[ -d /var/log ] || exit 0;
+
+syslogd_start() {
+  if [ -x /sbin/syslogd -a -x /sbin/klogd ]; then
+    echo -n "Starting sysklogd daemons: "
+    echo -n "/sbin/syslogd -O /var/log/syslog -b 3 "
+    /sbin/syslogd -O /var/log/syslog -b 3
+    echo "/sbin/klogd -c 3"
+    /sbin/klogd -c 3
+  fi
+}
+
+syslogd_stop() {
+  killall syslogd 2> /dev/null
+  killall klogd 2> /dev/null
+}
+
+syslogd_restart() {
+  syslogd_stop
+  sleep 1
+  syslogd_start
+}
+
+case "$1" in
+  start)
+    syslogd_start
+    ;;
+  stop)
+    syslogd_stop
+    ;;
+  restart|reload)
+   syslogd_restart
+    ;;
+  *)
+    echo -n "usage: $0 {start|stop|restart|reload}"
+    ;;
+esac
