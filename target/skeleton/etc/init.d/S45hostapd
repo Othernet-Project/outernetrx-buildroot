@@ -23,16 +23,19 @@ hostapd_start() {
     fi
   fi
 
-  # is MGMT enabled?
-  ENABLED=1 #$(/usr/bin/xml sel -t -v "/config/network/mgmt/enabled" $CONFIG_XML | /usr/bin/xml unesc)
-  if [ "$ENABLED" == "1" ]; then
-    # build hostapd conf
-    /bin/echo -n > $HOSTAPD_CONF
-    /bin/echo "interface=wlan0" >> $HOSTAPD_CONF
-    /bin/echo "driver=nl80211" >> $HOSTAPD_CONF
-    /bin/echo "channel=6" >> $HOSTAPD_CONF
-    /bin/echo "ssid=Outernet" >> $HOSTAPD_CONF
+  # Bring up wireless AP interface
+  if ! /sbin/ifconfig | grep "^wlan0" > /dev/null ; then
+    echo 2 > /sys/module/dhd/parameters/op_mode
+    /sbin/ifconfig wlan0 0.0.0.0 up
   fi
+
+  # build hostapd conf
+  /bin/echo -n > $HOSTAPD_CONF
+  /bin/echo "interface=wlan0" >> $HOSTAPD_CONF
+  /bin/echo "bridge=br0" >> $HOSTAPD_CONF
+  /bin/echo "driver=nl80211" >> $HOSTAPD_CONF
+  /bin/echo "channel=6" >> $HOSTAPD_CONF
+  /bin/echo "ssid=Outernet" >> $HOSTAPD_CONF
 
   /bin/echo -n "Starting hostapd: "
   start-stop-daemon -S -q -p $PID_FILE --exec /usr/sbin/hostapd -- -B -P $PID_FILE $HOSTAPD_CONF
@@ -45,6 +48,9 @@ hostapd_stop() {
     start-stop-daemon -K -q -o -p $PID_FILE
     [ $? -eq 0 ] && echo "OK" || echo "failed"
   fi
+
+  /sbin/ifconfig wlan0 0.0.0.0 down
+  /usr/sbin/brctl delif br0 wlan0
 }
 
 hostapd_restart() {

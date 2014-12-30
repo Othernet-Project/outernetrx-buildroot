@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# dnsmasq - DHCP / DNS daemon
+
+LEASE_FILE=/mnt/persist/dnsmasq.leases
+DNSMASQ_CONF=/etc/dnsmasq.conf
+PID_FILE=/var/run/dnsmasq.pid
+
+# include common routines
+. /etc/config.in
+
+# make sure we have a config.xml
+check_config
+
+dnsmasq_start() {
+  # check for stale pid file
+  if [ -f $PID_FILE ]; then
+    if ps xua | /bin/grep dnsmasq 1> /dev/null ; then
+      /bin/echo "dnsmasq is already running"
+      exit 0
+    else
+      /bin/echo "Removing stale pid file"
+      /bin/rm $PID_FILE
+    fi
+  fi
+
+  # only listen on the LAN and WIRELESS interface
+  /bin/echo -n > $DNSMASQ_CONF
+  /bin/echo "interface=br0" >> $DNSMASQ_CONF
+
+  # DHCP pool
+  /bin/echo "dhcp-range=192.168.0.10,192.168.0.254,255.255.255.0" >> $DNSMASQ_CONF
+
+  # Gateway
+  /bin/echo "dhcp-option=tag:lan,option:router,192.168.0.1" >> $DNSMASQ_CONF
+
+  # misc config
+  /bin/echo "dhcp-authoritative" >> $DNSMASQ_CONF
+  /bin/echo "dhcp-leasefile=$LEASE_FILE" >> $DNSMASQ_CONF
+
+  # DNS config
+  /bin/echo "no-hosts" >> $DNSMASQ_CONF
+  /bin/echo "clear-on-reload" >> $DNSMASQ_CONF
+  /bin/echo "no-negcache" >> $DNSMASQ_CONF
+
+  /bin/echo "Starting dnsmasq"
+  /usr/sbin/dnsmasq
+}
+
+dnsmasq_stop() {
+  if [ -f $PID_FILE ]; then
+    /bin/echo "Stopping dnsmasq..."
+    /bin/kill $(/bin/cat $PID_FILE)
+    /bin/sleep 1
+	if [ -f $PID_FILE ]; then
+      /bin/killall dnsmasq 2> /dev/null
+      /bin/rm -f $PID_FILE
+	fi
+  fi
+}
+
+dnsmasq_restart() {
+  dnsmasq_stop
+  /bin/sleep 1
+  dnsmasq_start
+}
+
+case "$1" in
+  start)
+    dnsmasq_start
+    ;;
+  stop)
+    dnsmasq_stop
+    ;;
+  restart|reload)
+    dnsmasq_restart
+    ;;
+  *)
+    /bin/echo "usage: $0 {start|stop|restart|reload}"
+    ;;
+esac

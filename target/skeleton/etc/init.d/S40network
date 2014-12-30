@@ -17,14 +17,9 @@ network_start() {
     fi
   fi
 
-  # Bring up wireless AP interface
-  echo 2 > /sys/module/dhd/parameters/op_mode
-  if ! /sbin/ifconfig | grep "^wlan0" > /dev/null ; then
-    /sbin/ifconfig wlan0 192.168.0.1 netmask 255.255.255.0
-  fi
-
-  # Enable forwarding
-  echo 1 > /proc/sys/net/ipv4/ip_forward
+  # Create bridge interface
+  grep br0: /proc/net/dev > /dev/null || /usr/sbin/brctl addbr br0
+  /sbin/ifconfig br0 192.168.0.1 netmask 255.255.255.0
 
   # Only respond to ARP for tht specific interface
   echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore
@@ -40,37 +35,47 @@ network_config() {
   MODE=$(/usr/bin/xml sel -t -m "/config/network"                 \
                              -v "mode"                            \
                              $CONFIG_XML | /usr/bin/xml unesc)
-  if [ $MODE == "static" ]; then
-    $(/usr/bin/xml sel -t -m "/config/network"                    \
-                          -o "/sbin/ifconfig eth0 " -v "address"  \
-                          -o " netmask " -v "netmask"             \
-                          $CONFIG_XML | /usr/bin/xml unesc)
+  if [ $MODE == "connected" ]; then
+    CONF=$(/usr/bin/xml sel -t -m "/config/network"               \
+                               -v "conf"                          \
+                               $CONFIG_XML | /usr/bin/xml unesc)
+    if [ $CONF == "static" ]; then
+      # Configure interface
+      $(/usr/bin/xml sel -t -m "/config/network"                    \
+                            -o "/sbin/ifconfig eth0 " -v "address"  \
+                            -o " netmask " -v "netmask"             \
+                            $CONFIG_XML | /usr/bin/xml unesc)
+
+      # Setup default gateway
+      GATEWAY=$(/usr/bin/xml sel -t -m "/config/network" -v "gateway" $CONFIG_XML | /usr/bin/xml unesc)
+      if [ -n "$GATEWAY" ]; then
+        /sbin/route del default 2> /dev/null
+        /sbin/route add default gw $GATEWAY
+      fi
+
+      # Setup DNS
+      DNS=$(/usr/bin/xml sel -t -m "/config/network" -v "dns" $CONFIG_XML | /usr/bin/xml unesc)
+      if [ -n "$DNS" ]; then
+        echo "nameserver $DNS" >> /etc/resolv.conf
+      fi
+    else
+      # Start ifplugd to handle hotplug / dhcp
+      /usr/sbin/ifplugd -i eth0 -f -r /usr/share/ifplugd/ifplugd.action -t 1 -u 0 -d 0
+    fi
   else
-    /usr/sbin/ifplugd -i eth0 -f -r /usr/share/ifplugd/ifplugd.action -t 1 -u 0 -d 0
-  fi
-
-  # Setup default gateway
-  GATEWAY=$(/usr/bin/xml sel -t -m "/config/network" -v "gateway" $CONFIG_XML | /usr/bin/xml unesc)
-  if [ -n "$GATEWAY" ]; then
-    /sbin/route del default 2> /dev/null
-    /sbin/route add default gw $GATEWAY
-  fi
-
-  # Setup DNS
-  DNS=$(/usr/bin/xml sel -t -m "/config/network" -v "dns" $CONFIG_XML | /usr/bin/xml unesc)
-  if [ -n "$DNS" ]; then
-    echo "nameserver $DNS" >> /etc/resolv.conf
+    # Add the ethernet interface to the bridge
+    /usr/sbin/brctl addif br0 eth0
   fi
 }
 
 # Network down
 network_stop() {
-  echo 0 > /proc/sys/net/ipv4/ip_forward
-
-  [ -f /var/run/ifplugd.eth0.pid ] && kill $(cat /var/run/ifplugd.eth0.pid) 2> /dev/null
+  if [ -f /var/run/ifplugd.eth0.pid ]; then
+    kill $(cat /var/run/ifplugd.eth0.pid) 2> /dev/null
+    /bin/sleep 1
+  fi
 
   /sbin/ifconfig eth0 0.0.0.0 down
-  /sbin/ifconfig wlan0 0.0.0.0 down
 
   /sbin/route del default 2> /dev/null
   echo -n > /etc/resolv.conf
