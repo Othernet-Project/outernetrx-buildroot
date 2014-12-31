@@ -1,0 +1,10 @@
+config BR2_PACKAGE_PYTHON_BJOERN
+	bool "python-bjoern"
+	depends on BR2_PACKAGE_PYTHON || BR2_PACKAGE_PYTHON3
+	select BR2_PACKAGE_LIBEV
+	help
+	  A screamingly fast, ultra-lightweight WSGI server for CPython,
+	  written in C using Marc Lehmann's high performance libev event
+	  loop and Ryan Dahl's http-parser.
+
+	  https://github.com/jonashaag/bjoern
