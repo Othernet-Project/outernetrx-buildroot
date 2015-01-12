@@ -15,6 +15,12 @@ fi
 /bin/mkdir -p /dev/pts
 /bin/mount -n -o mode=0620,gid=5 -t devpts devpts /dev/pts
 
+# Start status LED blinking
+/bin/echo 3 > /sys/class/leds/status/brightness
+/bin/echo timer > /sys/class/leds/status/trigger
+/bin/echo 250 > /sys/class/leds/status/delay_on
+/bin/echo 250 > /sys/class/leds/status/delay_off
+
 # Set the hostname.
 if [ -r /etc/hostname ]; then
   /bin/hostname $(/bin/cat /etc/hostname | cut -f1 -d .)
