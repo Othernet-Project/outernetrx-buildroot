@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ "$1" == "start" ] || exit 0
+
+echo "Loading modules..."
+
+if ! lsmod | grep wetekdvb > /dev/null ; then
+  /sbin/insmod /lib/modules/wetekdvb.ko
+fi
