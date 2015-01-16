@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-svn2800 Configuration
+# Buildroot 2014.11-svn2841 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -720,7 +720,7 @@ BR2_PACKAGE_PYTHON_UNICODEDATA=y
 BR2_PACKAGE_PYTHON_UCS2=y
 # BR2_PACKAGE_PYTHON_UCS4 is not set
 BR2_PACKAGE_PYTHON_SQLITE=y
-# BR2_PACKAGE_PYTHON_ZLIB is not set
+BR2_PACKAGE_PYTHON_ZLIB=y
 # BR2_PACKAGE_PYTHON_HASHLIB is not set
 
 #
