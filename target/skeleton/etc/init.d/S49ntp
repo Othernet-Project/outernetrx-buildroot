@@ -1,0 +1,35 @@
+#! /bin/sh
+# ntpd - Network time sync
+
+PID_FILE=/var/run/ntpd.pid
+
+mkdir -p /var/lib/ntp
+
+start() {
+  echo -n "Starting ntpd: "
+  start-stop-daemon -S -q -o -p $PID_FILE --exec /usr/sbin/ntpd -- -g -p $PID_FILE
+  [ $? -eq 0 ] && echo "OK" || echo "failed"
+}
+
+stop() {
+  echo -n "Stopping ntpd: "
+  start-stop-daemon -K -q -o -p $PID_FILE
+  [ $? -eq 0 ] && echo "OK" || echo "failed"
+}
+
+case "$1" in
+  start)
+    start
+	;;
+  stop)
+    stop
+    ;;
+   restart|reload)
+    restart
+    ;;
+  *) echo "Usage: $0 {start|stop|restart|reload}"
+	exit 1
+	;;
+esac
+
+exit $?

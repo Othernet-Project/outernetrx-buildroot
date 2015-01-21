@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-svn2841 Configuration
+# Buildroot 2014.11-svn2862 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -1357,11 +1357,19 @@ BR2_PACKAGE_IW=y
 # BR2_PACKAGE_NGREP is not set
 # BR2_PACKAGE_NMAP is not set
 # BR2_PACKAGE_NOIP is not set
-# BR2_PACKAGE_NTP is not set
+BR2_PACKAGE_NTP=y
+# BR2_PACKAGE_NTP_SNTP is not set
+# BR2_PACKAGE_NTP_NTP_KEYGEN is not set
+BR2_PACKAGE_NTP_NTPD=y
+# BR2_PACKAGE_NTP_NTPD_ATOM_PPS is not set
+BR2_PACKAGE_NTP_NTPDATE=y
+# BR2_PACKAGE_NTP_NTPDC is not set
+BR2_PACKAGE_NTP_NTPQ=y
+# BR2_PACKAGE_NTP_NTPSNMPD is not set
+# BR2_PACKAGE_NTP_TICKADJ is not set
 # BR2_PACKAGE_NUTTCP is not set
 # BR2_PACKAGE_ODHCPLOC is not set
 # BR2_PACKAGE_OLSR is not set
-# BR2_PACKAGE_OPENNTPD is not set
 # BR2_PACKAGE_OPENOBEX is not set
 # BR2_PACKAGE_OPENSSH is not set
 # BR2_PACKAGE_OPENSWAN is not set
