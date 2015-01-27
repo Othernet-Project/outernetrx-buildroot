@@ -43,6 +43,9 @@ dnsmasq_start() {
   /bin/echo "clear-on-reload" >> $DNSMASQ_CONF
   /bin/echo "no-negcache" >> $DNSMASQ_CONF
 
+  # DNS Spoofing
+  /bin/echo "address=/#/192.168.0.1" >> $DNSMASQ_CONF
+
   /bin/echo "Starting dnsmasq"
   /usr/sbin/dnsmasq
 }
