@@ -1,0 +1,33 @@
+#!/bin/sh
+
+IPTABLES=/usr/sbin/iptables
+
+firewall_start() {
+  # Flush the rules
+  $IPTABLES -F
+  $IPTABLES -F -t nat
+
+  # Scoop up DNS traffic
+  $IPTABLES -A PREROUTING -t nat -i br0 ! -d 192.168.0.1 -p udp --dport 53 -j REDIRECT
+}
+
+firewall_stop() {
+  # Flush the rules
+  $IPTABLES -F
+  $IPTABLES -F -t nat
+}
+
+case "$1" in
+  start)
+    firewall_start
+    ;;
+  stop)
+    firewall_stop
+    ;;
+  restart|reload)
+    firewall_start
+    ;;
+  *)
+    echo "usage: $0 {start|stop|restart|reload}"
+    ;;
+esac
