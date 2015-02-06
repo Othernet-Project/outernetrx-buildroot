@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Modify U-Boot env
+/usr/sbin/fw_setenv nandboot "echo Booting from nand ...; run vdacswitchconfig; \
+run nandargs; nand read boot \${loadaddr} 0 2000000; hdcp prefetch nand; bootm; \
+run recovery"
+
+/usr/sbin/fw_setenv nand_recovery "echo enter recovery;run nandargs;if mmcinfo; \
+then if fatload mmc 0 \${loadaddr} recovery.img; then bootm;fi;fi; if usb start; \
+then if fatload usb 0 \${loadaddr} recovery.img; then bootm;fi;fi; \
+nand read recovery \${loadaddr} 0 2000000; bootm"
+
+# Erase the data partition
+/usr/sbin/flash_erase /dev/mtd$(grep \"data\" /proc/mtd | sed 's/^mtd\([0-9]\+\).*/\1/') 0 0
+
+# Mount the SD card for the installer
+/bin/mount -o ro /dev/mmcblk0p1 /boot
+
+# Install FW
+/boot/outernet-rx.pkg --flash kernel.img $(grep \"recovery\" /proc/mtd | sed 's/^mtd\([0-9]\+\).*/\1/')
+/boot/outernet-rx.pkg --flash kernel.img $(grep \"boot\" /proc/mtd | sed 's/^mtd\([0-9]\+\).*/\1/')
+
+# Unmount
+/bin/umount /boot
+
+# Set LED to solid
+echo none > /sys/class/leds/status/trigger
+echo 1 > /sys/class/leds/status/brightness
+
+exit 0
