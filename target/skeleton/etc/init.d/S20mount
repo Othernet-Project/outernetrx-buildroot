@@ -38,8 +38,20 @@ persist_start() {
 
   # Mount the data volume
   if ! grep /mnt/data /proc/mounts 1> /dev/null ; then
-    /bin/echo "Mounting ubi0:data on /mnt/data"
-    /bin/mount -o noatime -t ubifs ubi0:data /mnt/data || exit 1
+    # If there is an SD card connected, check it first
+    mount_ext() {
+      for DEV in /dev/mmcblk* /dev/sd*; do
+        if [ -b $DEV ] && blkid $DEV | grep ext_store > /dev/null ; then
+          /bin/echo "Mounting $DEV on /mnt/data"
+          /bin/mount -o noatime $DEV /mnt/data && return 0
+        fi
+      done
+      return 1
+    }
+    if ! mount_ext ; then
+      /bin/echo "Mounting ubi0:data on /mnt/data"
+      /bin/mount -o noatime -t ubifs ubi0:data /mnt/data
+    fi
     /bin/chmod 2775 /mnt/data
     /bin/chgrp data /mnt/data
   fi
