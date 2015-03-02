@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_BJOERN_VERSION = 1.4.1
+PYTHON_BJOERN_VERSION = 1.4.2
 PYTHON_BJOERN_SOURCE = bjoern-$(PYTHON_BJOERN_VERSION).tar.gz
 PYTHON_BJOERN_SITE = https://pypi.python.org/packages/source/b/bjoern/
 PYTHON_BJOERN_LICENSE = BSD
