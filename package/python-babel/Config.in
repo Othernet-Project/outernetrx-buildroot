@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PYTHON_BABEL
+	bool "python-babel"
+	depends on BR2_PACKAGE_PYTHON || BR2_PACKAGE_PYTHON3
+	help
+	  Babel is an integrated collection of utilities that assist in
+	  internationalizing and localizing Python applications, with an
+	  emphasis on web-based applications
+
+	  http://babel.pocoo.org/docs/

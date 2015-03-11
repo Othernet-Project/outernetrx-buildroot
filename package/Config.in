@@ -481,6 +481,7 @@ endif
 	source "package/python3/Config.in"
 if BR2_PACKAGE_PYTHON || BR2_PACKAGE_PYTHON3
 menu "external python modules"
+	source "package/python-babel/Config.in"
 	source "package/python-bottle/Config.in"
 	source "package/python-bjoern/Config.in"
 	source "package/python-cffi/Config.in"
