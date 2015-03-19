@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PYTHON_SIX
+	bool "python-six"
+	depends on BR2_PACKAGE_PYTHON || BR2_PACKAGE_PYTHON3
+	help
+	  Six provides simple utilities for wrapping over differences between
+	  Python 2 and Python 3. It is intended to support codebases that work
+	  on both Python 2 and 3 without modification
+
+	  http://pypi.python.org/pypi/six/
