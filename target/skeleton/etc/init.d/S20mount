@@ -3,33 +3,17 @@
 MTD=/dev/$(grep \"data\" /proc/mtd | cut -d : -f 1)
 
 persist_start() {
-  # Attach the UBI volume
-  if [ ! -c /dev/ubi0 ]; then
-    /usr/sbin/ubiattach -p $MTD -d 0 || exit 1
-
-    # Wait up to 10 seconds for the attach to complete
-    for i in `seq 1 10`; do
-      if [ -c /dev/ubi0 ]; then
-          break;
-      fi
-      /bin/sleep 1
-    done
-
-    # Bail if the node was never created
-    [ -c /dev/ubi0 ] || exit 1
-  fi
-
-  # Create the persist volume if it does not exist
-  if ! /usr/sbin/ubinfo -d 0 -N persist 1> /dev/null 2>&1 ; then
-    /usr/sbin/ubimkvol /dev/ubi0 -N persist -s 32MiB || exit 1
-  fi
-  # Create the data volume if it does not exist
-  if ! /usr/sbin/ubinfo -d 0 -N data 1> /dev/null 2>&1 ; then
-    /usr/sbin/ubimkvol /dev/ubi0 -N data -m || exit 1
-  fi
+  # Bail if no UBI volume
+  [ -c /dev/ubi0 ] || exit 1
 
   # Mount the persist volume
   if ! grep /mnt/persist /proc/mounts 1> /dev/null ; then
+
+    # Create the persist volume if it does not exist
+    if ! /usr/sbin/ubinfo -d 0 -N persist 1> /dev/null 2>&1 ; then
+      /usr/sbin/ubimkvol /dev/ubi0 -N persist -s 32MiB || exit 1
+    fi
+
     /bin/echo "Mounting ubi0:persist on /mnt/persist"
     /bin/mount -o noatime -t ubifs ubi0:persist /mnt/persist || exit 1
     /bin/chmod 2775 /mnt/persist
@@ -48,10 +32,16 @@ persist_start() {
       done
       return 1
     }
+
     if ! mount_ext ; then
+      # Create the data volume if it does not exist
+      if ! /usr/sbin/ubinfo -d 0 -N data 1> /dev/null 2>&1 ; then
+        /usr/sbin/ubimkvol /dev/ubi0 -N data -s 3584MiB || exit 1
+      fi
       /bin/echo "Mounting ubi0:data on /mnt/data"
       /bin/mount -o noatime -t ubifs ubi0:data /mnt/data
     fi
+
     /bin/chmod 2775 /mnt/data
     /bin/chgrp data /mnt/data
   fi
