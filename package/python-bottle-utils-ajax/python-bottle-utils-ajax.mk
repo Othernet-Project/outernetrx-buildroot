@@ -9,6 +9,6 @@ PYTHON_BOTTLE_UTILS_AJAX_SOURCE = bottle-utils-ajax-$(PYTHON_BOTTLE_UTILS_AJAX_V
 PYTHON_BOTTLE_UTILS_AJAX_SITE = http://pypi.python.org/packages/source/b/bottle-utils-ajax/
 PYTHON_BOTTLE_UTILS_AJAX_LICENSE = GPL
 PYTHON_BOTTLE_UTILS_AJAX_DEPENDENCIES = python-bottle
-PYTHON_BOTTLE_UTILS_AJAX_SETUP_TYPE = distutils
+PYTHON_BOTTLE_UTILS_AJAX_SETUP_TYPE = setuptools
 
 $(eval $(python-package))
