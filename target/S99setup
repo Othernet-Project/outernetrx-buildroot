@@ -44,6 +44,7 @@ if [ ! -c /dev/ubi0 ]; then
   [ -c /dev/ubi0 ] || exit 1
 fi
 /boot/outernet-rx.pkg --ubi rootfs.ubifs ubi0:rootfs
+/boot/outernet-rx.pkg --ubi rootfs.ubifs ubi0:rootfs	# This way we have an _rootfs
 
 # Unmount
 /bin/umount /boot
