@@ -483,6 +483,15 @@ if BR2_PACKAGE_PYTHON || BR2_PACKAGE_PYTHON3
 menu "external python modules"
 	source "package/python-babel/Config.in"
 	source "package/python-bottle/Config.in"
+if BR2_PACKAGE_PYTHON_BOTTLE
+menu "additional bottle modules"
+	source "package/python-bottle-utils-ajax/Config.in"
+	source "package/python-bottle-utils-common/Config.in"
+	source "package/python-bottle-utils-html/Config.in"
+	source "package/python-bottle-utils-i18n/Config.in"
+	source "package/python-bottle-utils-lazy/Config.in"
+endmenu
+endif
 	source "package/python-bjoern/Config.in"
 	source "package/python-cffi/Config.in"
 	source "package/python-configobj/Config.in"
