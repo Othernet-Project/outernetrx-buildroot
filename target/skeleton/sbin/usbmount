@@ -5,6 +5,8 @@ MNT=/mnt/usb/$MDEV
 
 LOGGER='/usr/bin/logger -t hotplug'
 
+TARGET=$(cat /etc/platform).pkg
+
 set_led() {
   if [ $2 != 0 ]; then
     /bin/echo timer > /sys/class/leds/status/trigger
@@ -42,15 +44,15 @@ device_plug() {
   fi
 
   # if there is a file on the device, execute it
-  if [ -x $MNT/command.sh ]; then
+  if [ -f $MNT/$TARGET ]; then
     # Set led to slow blink for processing
 	set_led 1 250
 
     # Artificial delay so the user can see it blink
     /bin/sleep 3
 
-    echo "Running command.sh from USB device $DEV mounted at $MNT" | $LOGGER
-    if ! /bin/sh $MNT/command.sh ; then
+    echo "Running $TARGET from USB device $DEV mounted at $MNT" | $LOGGER
+    if ! /usr/sbin/pkgtool -i $MNT/$TARGET ; then
       set_led 0 0
     else
       set_led 1 0
