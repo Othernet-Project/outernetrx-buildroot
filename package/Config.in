@@ -485,6 +485,7 @@ menu "external python modules"
 	source "package/python-bottle/Config.in"
 if BR2_PACKAGE_PYTHON_BOTTLE
 menu "additional bottle modules"
+	source "package/python-bottle-fdsend/Config.in"
 	source "package/python-bottle-utils-ajax/Config.in"
 	source "package/python-bottle-utils-common/Config.in"
 	source "package/python-bottle-utils-html/Config.in"
