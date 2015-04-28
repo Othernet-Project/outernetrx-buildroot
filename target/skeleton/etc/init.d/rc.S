@@ -29,6 +29,10 @@ else
   /bin/hostname unknown
 fi
 
+if [ $(/bin/date +%s) -lt 1420070400 ]; then
+  date -s 201501010000.00
+fi
+
 # Start all init scripts in /etc/init.d
 # executing them in numerical order.
 #
