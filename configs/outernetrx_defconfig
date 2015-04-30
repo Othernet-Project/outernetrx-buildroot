@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-svn2991 Configuration
+# Buildroot 2014.11-00062-gad9cc82 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -746,7 +746,7 @@ BR2_PACKAGE_PYTHON_ZLIB=y
 #
 # external python modules
 #
-BR2_PACKAGE_PYTHON_BABEL=y
+# BR2_PACKAGE_PYTHON_BABEL is not set
 BR2_PACKAGE_PYTHON_BOTTLE=y
 
 #
