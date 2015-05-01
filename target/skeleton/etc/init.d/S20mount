@@ -2,7 +2,7 @@
 
 MTD=/dev/$(grep \"data\" /proc/mtd | cut -d : -f 1)
 
-persist_start() {
+mount_start() {
   # Bail if no UBI volume
   [ -c /dev/ubi0 ] || exit 1
 
@@ -15,6 +15,7 @@ persist_start() {
     fi
 
     /bin/echo "Mounting ubi0:persist on /mnt/persist"
+    /bin/mkdir /mnt/persist
     /bin/mount -o noatime -t ubifs ubi0:persist /mnt/persist || exit 1
     /bin/chmod 2775 /mnt/persist
     /bin/chgrp config /mnt/persist
@@ -22,6 +23,8 @@ persist_start() {
 
   # Mount the data volume
   if ! grep /mnt/data /proc/mounts 1> /dev/null ; then
+    /bin/mkdir /mnt/data
+
     # If there is an SD card connected, check it first
     mount_ext() {
       for DEV in /dev/mmcblk* /dev/sd*; do
@@ -47,7 +50,7 @@ persist_start() {
   fi
 }
 
-persist_stop() {
+mount_stop() {
   if grep /mnt/data /proc/mounts 1> /dev/null ; then
     /bin/echo "Unmounting /mnt/data"
     /bin/umount -f /mnt/data
@@ -64,10 +67,10 @@ persist_stop() {
 
 case "$1" in
   start)
-    persist_start
+    mount_start
     ;;
   stop)
-    persist_stop
+    mount_stop
     ;;
   restart|reload)
     ;;
