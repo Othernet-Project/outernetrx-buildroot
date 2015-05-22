@@ -28,7 +28,7 @@ mount_start() {
     # If there is an SD card connected, check it first
     mount_ext() {
       for DEV in /dev/mmcblk* /dev/sd*; do
-        if [ -b $DEV ] && blkid $DEV | grep ext_store > /dev/null ; then
+        if [ -b $DEV ] && blkid $DEV | grep -i ext_store > /dev/null ; then
           /bin/echo "Mounting $DEV on /mnt/data"
           /bin/mount -o noatime $DEV /mnt/data && return 0
         fi
