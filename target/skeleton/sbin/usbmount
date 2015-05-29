@@ -5,7 +5,6 @@ MNT=/mnt/usb/$MDEV
 
 LOGGER='/usr/bin/logger -t hotplug'
 TARGET=$(cat /etc/platform).pkg
-SCRIPT=command.sh
 
 set_led() {
   if [ $2 != 0 ]; then
@@ -44,22 +43,6 @@ device_plug() {
     echo "Failed to mount $DEV" | $LOGGER
     set_led 0 0
     return 1
-  fi
-
-  # If there is a script on the device, execute it
-  if [ -f $MNT/$SCRIPT ]; then
-    # Set led to slow blink for processing
-	set_led 1 250
-
-    # Artificial delay so the user can see it blink
-    /bin/sleep 3
-
-    echo "Running $SCRIPT from USB device $DEV mounted at $MNT" | $LOGGER
-    if ! /bin/sh $MNT/$SCRIPT | $LOGGER; then
-      set_led 0 0
-    else
-      set_led 1 0
-    fi
   fi
 
   # if there is a file on the device, execute it
