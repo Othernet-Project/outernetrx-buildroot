@@ -76,10 +76,10 @@ $LOGGER $ACTION
 
 case "$ACTION" in
   add)
-    if echo "$DEV" | grep sd[a-z][0-9] > /dev/null; then
+    if blkid $DEV | grep $DEV > /dev/null; then
       device_plug
     else
-      echo "$DEV does not look like a partition, nothing to do" | $LOGGER
+      echo "$DEV does not look mountable, nothing to do" | $LOGGER
     fi
     ;;
   remove)
