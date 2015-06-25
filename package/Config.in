@@ -492,6 +492,7 @@ menu "additional bottle modules"
 	source "package/python-bottle-utils-html/Config.in"
 	source "package/python-bottle-utils-i18n/Config.in"
 	source "package/python-bottle-utils-lazy/Config.in"
+	source "package/python-bottle-utils-form/Config.in"
 endmenu
 endif
 	source "package/python-bjoern/Config.in"
@@ -548,6 +549,7 @@ endif
 	source "package/python-tornado/Config.in"
 	source "package/python-urwid/Config.in"
 	source "package/python-versiontools/Config.in"
+	source "package/python-webassets/Config.in"
 endmenu
 endif
 	source "package/ruby/Config.in"
