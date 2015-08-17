@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-00092-gdd9de21 Configuration
+# Buildroot 2014.11-g7cf8e13 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -258,6 +258,11 @@ BR2_PACKAGE_BUSYBOX_CONFIG="target/busybox-1.22.x.config"
 BR2_PACKAGE_BUSYBOX_SHOW_OTHERS=y
 BR2_PACKAGE_BUSYBOX_WATCHDOG=y
 BR2_PACKAGE_BUSYBOX_WATCHDOG_PERIOD="5"
+
+#
+# Outernet-specific
+#
+BR2_PACKAGE_MONITORING=y
 
 #
 # Audio and video applications
