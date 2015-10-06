@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-g7cf8e13 Configuration
+# Buildroot 2014.11-g08d342c Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -468,6 +468,7 @@ BR2_PACKAGE_MTD_FLASH_ERASE=y
 # BR2_PACKAGE_MTD_MKFSJFFS2 is not set
 # BR2_PACKAGE_MTD_MKFSUBIFS is not set
 # BR2_PACKAGE_MTD_MTD_DEBUG is not set
+# BR2_PACKAGE_MTD_MTDPART is not set
 # BR2_PACKAGE_MTD_NANDDUMP is not set
 # BR2_PACKAGE_MTD_NANDTEST is not set
 # BR2_PACKAGE_MTD_NANDWRITE is not set
