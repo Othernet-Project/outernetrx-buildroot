@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Start/stop lighttpd
+#
+
+PIDFILE=/var/run/lighttpd.pid # Not used directly, this is where it should be
+ARGS="-f /etc/lighttpd/lighttpd.conf"
+
+case "$1" in
+  start)
+	echo "Starting lighttpd..."
+	mkdir -p /var/log/lighttpd /var/tmp/lighttpd
+	start-stop-daemon -S -p $PIDFILE -x /usr/sbin/lighttpd -- $ARGS
+	;;
+  stop)
+	echo -n "Stopping lighttpd..."
+	start-stop-daemon -K -o -p $PIDFILE
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
