@@ -1,0 +1,10 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_DASHBOARD
+	bool "python-librarian-dashboard"
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_CORE
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_MENU
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_AUTH
+
+	help
+      Module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian/

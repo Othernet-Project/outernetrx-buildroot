@@ -1,0 +1,10 @@
+config BR2_PACKAGE_PYTHON_BOTTLE_UTILS
+	bool "python-bottle-utils"
+	select BR2_PACKAGE_PYTHON_BOTTLE
+	select BR2_PACKAGE_PYTHON_DATEUTIL
+
+	help
+	  Bottle Utils is a collection of loosely related packages for
+	  developing web applications using Bottle web framework.
+
+	  http://outernet-project.github.io/bottle-utils/

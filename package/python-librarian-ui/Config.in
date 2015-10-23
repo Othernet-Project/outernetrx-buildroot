@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_UI
+	bool "python-librarian-ui"
+
+	help
+      User Interface module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian-ui/

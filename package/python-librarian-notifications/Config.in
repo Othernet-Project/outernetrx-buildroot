@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_NOTIFICATIONS
+	bool "python-librarian-notifications"
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_CORE
+
+	help
+      Module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian/

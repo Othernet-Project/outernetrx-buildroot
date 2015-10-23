@@ -1,0 +1,19 @@
+config BR2_PACKAGE_PYTHON_FSAL
+	bool "python-fsal"
+    select BR2_PACKAGE_PYTHON_GEVENT
+    select BR2_PACKAGE_PYTHON-DATEUTIL
+    select BR2_PACKAGE_PYTHON_SCANDIR
+    select BR2_PACKAGE_PYTHON_SIX
+    select BR2_PACKAGE_PYTHON_WHEEL
+    select BR2_PACKAGE_PYTHON_XMLTODICT
+
+	help
+        File System Abstraction Layer is a system which provides a few high 
+        level operations on files & folders. The intended utility is for 
+        Librarian & other apps to use this to perform File Manager like 
+        operations.
+
+        The heavyweight filesystem operations are performed by the daemon via 
+        XML based IPC calls.
+
+	  https://github.com/Outernet-Project/fsal/

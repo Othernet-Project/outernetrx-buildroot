@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_NETINTERFACES
+	bool "python-librarian-netinterfaces"
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_CORE
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_DASHBOARD
+
+	help
+      Module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian/

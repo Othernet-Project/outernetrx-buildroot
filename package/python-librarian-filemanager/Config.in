@@ -1,0 +1,11 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_FILEMANAGER
+	bool "python-librarian-filemanager"
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_CORE
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_CONTENT
+	select BR2_PACKAGE_PYTHON_FSAL
+	select BR2_PACKAGE_PYTHON_SCANDIR
+
+	help
+      Module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian/

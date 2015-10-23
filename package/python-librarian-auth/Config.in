@@ -1,0 +1,11 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_AUTH
+	bool "python-librarian-auth"
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_CORE
+    select BR2_PYTHON-PBKDF2
+    select BR2_PYTHON-LIBRARIAN_SETUP
+    select BR2_PYTHON-LIBRARIAN_MENU
+
+	help
+      Module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian/

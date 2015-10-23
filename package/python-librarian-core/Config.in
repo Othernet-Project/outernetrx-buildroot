@@ -1,0 +1,12 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_CORE
+	bool "python-librarian-core"
+	select BR2_PACKAGE_PYTHON_LIBRARIAN
+    select BR2_PACKAGE_PYTHON_CSSMIN
+    select BR2_PACKAGE_PYTHON_PYTZ
+    select BR2_PACKAGE_PYTHON_SQLIZE
+    select BR2_PACKAGE_PYTHON_WEBASSETS
+
+	help
+      Module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian/

@@ -1,0 +1,10 @@
+config BR2_PACKAGE_PYTHON_LIBRARIAN_ONDD
+	bool "python-librarian-ondd"
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_CORE
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_SETUP
+	select BR2_PACKAGE_PYTHON_LIBRARIAN_DASHBOARD
+
+	help
+      Module of content library manager for Outernet Receiver
+
+	  https://github.com/Outernet-Project/librarian/
