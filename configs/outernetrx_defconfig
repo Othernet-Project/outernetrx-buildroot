@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-g66f866a-dirty Configuration
+# Buildroot 2014.11-gf1beff8-dirty Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -611,6 +611,7 @@ BR2_PACKAGE_QT5_JSCORE_AVAILABLE=y
 BR2_PACKAGE_EUDEV=y
 BR2_PACKAGE_PROVIDES_UDEV="eudev"
 # BR2_PACKAGE_EUDEV_RULES_GEN is not set
+BR2_PACKAGE_EUDEV_ENABLE_HWDB=y
 # BR2_PACKAGE_EVEMU is not set
 # BR2_PACKAGE_EVTEST is not set
 # BR2_PACKAGE_FAN_CTRL is not set
