@@ -25,25 +25,12 @@ mount_start() {
   if ! grep /mnt/data /proc/mounts 1> /dev/null ; then
     /bin/mkdir /mnt/data
 
-    # If there is an SD card connected, check it first
-    mount_ext() {
-      for DEV in /dev/mmcblk* /dev/sd*; do
-        if [ -b $DEV ] && blkid $DEV | grep -i ext_store > /dev/null ; then
-          /bin/echo "Mounting $DEV on /mnt/data"
-          /bin/mount -o noatime $DEV /mnt/data && return 0
-        fi
-      done
-      return 1
-    }
-
-    if ! mount_ext ; then
-      # Create the data volume if it does not exist
-      if ! /usr/sbin/ubinfo -d 0 -N data 1> /dev/null 2>&1 ; then
-        /usr/sbin/ubimkvol /dev/ubi0 -N data -s 3584MiB || exit 1
-      fi
-      /bin/echo "Mounting ubi0:data on /mnt/data"
-      /bin/mount -o noatime -t ubifs ubi0:data /mnt/data
+    # Create the data volume if it does not exist
+    if ! /usr/sbin/ubinfo -d 0 -N data 1> /dev/null 2>&1 ; then
+      /usr/sbin/ubimkvol /dev/ubi0 -N data -s 3584MiB || exit 1
     fi
+    /bin/echo "Mounting ubi0:data on /mnt/data"
+    /bin/mount -o noatime -t ubifs ubi0:data /mnt/data
 
     /bin/chmod 2775 /mnt/data
     /bin/chgrp data /mnt/data
