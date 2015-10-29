@@ -28,9 +28,6 @@ MOUNT_OPTS = {
     'ntfs': 'windows_names,fmask=133,dmask=022,recover',
     'vfat': 'utf8',
 }
-MOUNT_FS_OVERRIDE = {
-    'ntfs': 'ntfs-3g'
-}
 
 # Platform
 PLATFORM = '/etc/platform'
@@ -273,7 +270,17 @@ def use_ext(devname, mdir, fs):
         # Also make sure nothing else is mounted there
         mount.umount(DATADIR)
         # Finally mount the data dir
-        ret = mount.mount(devname, DATADIR, opts=get_mount_opts(fs, 'remount'))
+        if fs != 'ntfs':
+            ret = mount.mount(devname, DATADIR, opts='rw,remount')
+            if ret != 0:
+                raise RuntimeError('Failed to remount as data storage')
+            return
+
+        # NTFS-3G is a fuse-based filesystem, so we cannot use remount
+        # (bummer). Instead we need to do a proper unmount, and then mount
+        # it normally.
+        mount.umount(devname)
+        ret = mount.mount(devname, DATADIR, fs=fs, opts=MOUNT_OPTS['ntfs'])
         if ret != 0:
             raise RuntimeError('Failed to remount as data storage')
 
@@ -294,8 +301,7 @@ def handle_storage(devname, label, fs, l):
         check_fs(devname, fs)
         mdir = mpath(devname)
         log_dbg('Mounting {} -> {}'.format(devname, mdir))
-        ret = mount.mount(devname, mdir, MOUNT_FS_OVERRIDE.get(fs, fs), 
-                          opts=get_mount_opts(fs))
+        ret = mount.mount(devname, mdir, fs, opts=get_mount_opts(fs))
         if ret != 0:
             raise RuntimeError('Failed to mount the partition')
 
