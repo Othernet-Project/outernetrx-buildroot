@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_LIBRARIAN_NOTIFICATIONS_VERSION = 0.1
+PYTHON_LIBRARIAN_NOTIFICATIONS_VERSION = master
 PYTHON_LIBRARIAN_NOTIFICATIONS_SOURCE = $(PYTHON_LIBRARIAN_NOTIFICATIONS_VERSION).tar.gz
 PYTHON_LIBRARIAN_NOTIFICATIONS_SITE = https://github.com/Outernet-Project/librarian-notifications/archive/
 PYTHON_LIBRARIAN_NOTIFICATIONS_LICENSE = GPL

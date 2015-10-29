@@ -506,6 +506,8 @@ if BR2_PACKAGE_PYTHON || BR2_PACKAGE_PYTHON3
 menu "external python modules"
 	source "package/python-babel/Config.in"
 	source "package/python-bottle/Config.in"
+	source "package/python-wheel/Config.in"
+	source "package/python-xmltodict/Config.in"
 if BR2_PACKAGE_PYTHON_BOTTLE
 menu "additional bottle modules"
 	source "package/python-bottle-fdsend/Config.in"
