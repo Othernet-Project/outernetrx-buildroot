@@ -23,6 +23,14 @@ CHECK_PROGS = {
     'ext4': '/usr/sbin/fsck.ext4',
     'vfat': '/sbin/fsck.fat',
 }
+DEFAULT_MOUNT_OPTS = 'defaults'
+MOUNT_OPTS = {
+    'ntfs': 'windows_names,fmask=133,dmask=022,recover',
+    'vfat': 'utf8',
+}
+MOUNT_FS_OVERRIDE = {
+    'ntfs': 'ntfs-3g'
+}
 
 # Platform
 PLATFORM = '/etc/platform'
@@ -75,6 +83,13 @@ def get_mountpoint(devname):
         if entry.dev == devname:
             return entry.mdir
     return ''
+
+
+def get_mount_opts(fs, extra_opts=None):
+    opts = MOUNT_OPTS.get(fs, DEFAULT_MOUNT_OPTS)
+    if extra_opts:
+        opts += ',' + extra_opts
+    return opts
 
 
 def get_upgrade_path(mdir):
@@ -147,6 +162,7 @@ def check_fs(dev, fstype):
     check_cmd = CHECK_PROGS.get(fstype)
     if not check_cmd:
         log_warn('Checking this filesystem is not supported')
+        return
     log_dbg('Checking filesystem using {}'.format(check_cmd))
     if call([check_cmd, '-p', dev]) != 0:
         log_warn('Filesystem may have errors that could not be fixed')
@@ -257,7 +273,9 @@ def use_ext(devname, mdir, fs):
         # Also make sure nothing else is mounted there
         mount.umount(DATADIR)
         # Finally mount the data dir
-        mount.mount(devname, DATADIR, opts='defaults,remount')
+        ret = mount.mount(devname, DATADIR, opts=get_mount_opts(fs, 'remount'))
+        if ret != 0:
+            raise RuntimeError('Failed to remount as data storage')
 
 
 def do_upgrade(mdir):
@@ -276,7 +294,10 @@ def handle_storage(devname, label, fs, l):
         check_fs(devname, fs)
         mdir = mpath(devname)
         log_dbg('Mounting {} -> {}'.format(devname, mdir))
-        mount.mount(devname, mdir, fs)
+        ret = mount.mount(devname, mdir, MOUNT_FS_OVERRIDE.get(fs, fs), 
+                          opts=get_mount_opts(fs))
+        if ret != 0:
+            raise RuntimeError('Failed to mount the partition')
 
     log_info('{} mounted at {}'.format(devname, mdir))
 
