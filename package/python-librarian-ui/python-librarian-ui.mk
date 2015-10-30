@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_LIBRARIAN_UI_VERSION = 2488f5ecc2f2171467cf3a086df8f19330f00990
+PYTHON_LIBRARIAN_UI_VERSION = bdb5926c24b7e2826541fff81123f1d5f8a734a6
 PYTHON_LIBRARIAN_UI_SOURCE = $(PYTHON_LIBRARIAN_UI_VERSION).tar.gz
 PYTHON_LIBRARIAN_UI_SITE = https://github.com/Outernet-Project/librarian-ui/archive/
 PYTHON_LIBRARIAN_UI_LICENSE = GPL
