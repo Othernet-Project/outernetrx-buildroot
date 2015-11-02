@@ -16,7 +16,7 @@ DEBUG = True
 MOUNT_BASE = '/mnt'
 CP = '/bin/cp'
 EXT_LABEL = 'ext_store'
-DATADIR = os.environ.get('OUTERNET_DATA', '/mnt/data')
+DATADIR = os.environ.get('OUTERNET_DATA', '/mnt/data/downloads')
 CHECK_PROGS = {
     'ext2': '/usr/sbin/fsck.ext2',
     'ext3': '/usr/sbin/fsck.ext3',
@@ -36,7 +36,7 @@ EXT_PLATFORM_FILE = '.platform'
 # Services
 SERVICE_CMD = '/etc/init.d/{}'
 ONDD_SERVICE = 'S80ondd'
-LIBR_SERVICE = 'S90librarian'
+LIBR_SERVICE = 'S91librarian'
 
 # Upgrade
 UPGRADE_FILE_EXT = '.pkg'
@@ -46,15 +46,6 @@ UPGRADE_EXEC = '/usr/sbin/pkgtool'
 LED_CLASS = 'status'
 START_BLINK_INTERVAL = 500
 PROGRESS_BLINK_INTERVAL = 100
-
-# Internal storage
-UBINFO = '/usr/sbin/ubinfo'
-MKUBI = '/usr/sbin/ubimkvol'
-UBIVOL = '0'
-UBIDEV = '/dev/ubi{}'.format(UBIVOL)
-UBILBL = 'data'
-UBISIZE = '3584MiB'
-UBIPART = 'ubi{}:{}'.format(UBIVOL, UBILBL)
 
 
 def log_err(msg):
@@ -137,22 +128,6 @@ def copy_contents(src, target):
 def mpath(devname):
     devname = devname.split('/')[-1]
     return os.path.join(MOUNT_BASE, devname)
-
-
-def mkinternal():
-    if call([UBINFO, '-d', UBIVOL, '-N', UBILBL]) == 0:
-        log_dbg('UBI volume already exists, nothing to do')
-        return
-    if call([MKUBI, UBIDEV, '-N', UBILBL, '-s', UBISIZE]) != 0:
-        raise RuntimeError('Could not create UBI volume')
-    log_dbg('Created new UBI volume ubi{}:{}'.format(UBIVOL, UBILBL))
-
-
-def mount_internal():
-    mkinternal()
-    if mount.mount(UBIPART, DATADIR, fs='ubifs', opts='noatime') != 0:
-        raise RuntimeError('Could not mount UBI volume')
-    log_dbg('ubi{}:{} has been mounted at {}'.format(UBIVOL, UBILBL, DATADIR))
 
 
 def check_fs(dev, fstype):
@@ -256,7 +231,8 @@ def use_ext(devname, mdir, fs):
             set_ext_platform(mdir)
 
         # Synchronize the internal and external storage
-        if os.path.isdir(DATADIR):
+        if os.path.exists(DATADIR):
+            log_dbg('Copying content from internal storage to external')
             copy_contents(DATADIR, mdir)
 
         # Set up the external storage
@@ -326,26 +302,11 @@ def handle_storage(devname, label, fs, l):
         mount.umount(devname)
 
 
-def simple_unmount(dev):
+def handle_storage_removal(dev, label, l):
     for d in (e.mdir for e in mount.get_mtab() if e.dev == dev):
         log_dbg('Unmounting {}'.format(d))
         if mount.umount(d) != 0:
             raise RuntimeError('Failed to unmount {}'.format(d))
-
-
-def swap_with_internal(dev):
-    with services_stopped():
-        simple_unmount(dev)
-        mount_internal()
-
-
-def handle_storage_removal(dev, label, l):
-    if label and label.lower() == EXT_LABEL:
-        log_dbg('Swapping with internal storage')
-        swap_with_internal(dev)
-    else:
-        log_dbg('Simple unmount')
-        simple_unmount(dev)
 
 
 def main():

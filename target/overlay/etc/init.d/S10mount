@@ -2,38 +2,48 @@
 
 MTD=/dev/$(grep \"data\" /proc/mtd | cut -d : -f 1)
 
+hasubivol() {
+  name=$1
+  /usr/sbin/ubinfo -d 0 -N "$name" 1> /dev/null 2>&1
+}
+
+mkubivol() {
+  name=$1
+  size=$2
+  hasubivol "$name" && return 0
+  /usr/sbin/ubimkvol /dev/ubi0 -N "$name" -s "${size}MiB" || exit 1
+}
+
+mountubivol() {
+  name=$1
+  grp=$2
+  /bin/echo "Mounting ubi0:${name} on /mnt/${name}"
+  /bin/mount -o noatime -t ubifs "ubi0:${name}" "/mnt/${name}" || exit 1
+  /bin/chmod 2775 "/mnt/${name}"
+  /bin/chgrp "${grp}" "/mnt/${name}"
+}
+
+ismounted() {
+  mdir=$1
+  cat /proc/mounts | cut -f1 -d' ' | grep ^${mdir}$ 1> /dev/null
+}
+
 mount_start() {
   # Bail if no UBI volume
   [ -c /dev/ubi0 ] || exit 1
 
   # Mount the persist volume
-  if ! grep /mnt/persist /proc/mounts 1> /dev/null ; then
-
+  if ! ismounted /mnt/persist ; then
     # Create the persist volume if it does not exist
-    if ! /usr/sbin/ubinfo -d 0 -N persist 1> /dev/null 2>&1 ; then
-      /usr/sbin/ubimkvol /dev/ubi0 -N persist -s 32MiB || exit 1
-    fi
-
-    /bin/echo "Mounting ubi0:persist on /mnt/persist"
-    /bin/mkdir /mnt/persist
-    /bin/mount -o noatime -t ubifs ubi0:persist /mnt/persist || exit 1
-    /bin/chmod 2775 /mnt/persist
-    /bin/chgrp config /mnt/persist
+    mkubivol persist 32
+    mountubivol persist config
   fi
 
   # Mount the data volume
-  if ! grep /mnt/data /proc/mounts 1> /dev/null ; then
-    /bin/mkdir /mnt/data
-
+  if ! ismounted /mnt/data ; then
     # Create the data volume if it does not exist
-    if ! /usr/sbin/ubinfo -d 0 -N data 1> /dev/null 2>&1 ; then
-      /usr/sbin/ubimkvol /dev/ubi0 -N data -s 3584MiB || exit 1
-    fi
-    /bin/echo "Mounting ubi0:data on /mnt/data"
-    /bin/mount -o noatime -t ubifs ubi0:data /mnt/data
-
-    /bin/chmod 2775 /mnt/data
-    /bin/chgrp data /mnt/data
+    mkubivol data 3584
+    mountubivol data data
   fi
 }
 
