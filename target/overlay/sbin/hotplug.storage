@@ -245,18 +245,10 @@ def use_ext(devname, mdir, fs):
             pass
         # Also make sure nothing else is mounted there
         mount.umount(DATADIR)
-        # Finally mount the data dir
-        if fs != 'ntfs':
-            ret = mount.mount(devname, DATADIR, opts='rw,remount')
-            if ret != 0:
-                raise RuntimeError('Failed to remount as data storage')
-            return
 
-        # NTFS-3G is a fuse-based filesystem, so we cannot use remount
-        # (bummer). Instead we need to do a proper unmount, and then mount
-        # it normally.
+        # Finally mount the data dir
         mount.umount(devname)
-        ret = mount.mount(devname, DATADIR, fs=fs, opts=MOUNT_OPTS['ntfs'])
+        ret = mount.mount(devname, DATADIR, fs=fs, opts=MOUNT_OPTS[fs])
         if ret != 0:
             raise RuntimeError('Failed to remount as data storage')
 
@@ -303,10 +295,10 @@ def handle_storage(devname, label, fs, l):
 
 
 def handle_storage_removal(dev, label, l):
-    for d in (e.mdir for e in mount.get_mtab() if e.dev == dev):
-        log_dbg('Unmounting {}'.format(d))
-        if mount.umount(d) != 0:
-            raise RuntimeError('Failed to unmount {}'.format(d))
+    if get_mountpoint(dev):
+        if mount.umount(dev) != 0:
+            raise RuntimeError('Failed to unmount {} ({})'.format(
+                dev, label or 'no label'))
 
 
 def main():
