@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_LIBRARIAN_CORE_VERSION = 0c8b9a6952e19899c9df608ce7540cad0d91cb1b
+PYTHON_LIBRARIAN_CORE_VERSION = b425159fdd719eddb3fa6cc4f22fe18ae313adcc
 PYTHON_LIBRARIAN_CORE_SOURCE = $(PYTHON_LIBRARIAN_CORE_VERSION).tar.gz
 PYTHON_LIBRARIAN_CORE_SITE = https://github.com/Outernet-Project/librarian-core/archive/
 PYTHON_LIBRARIAN_CORE_LICENSE = GPL
