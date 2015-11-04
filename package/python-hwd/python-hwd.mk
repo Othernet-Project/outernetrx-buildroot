@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_HWD_VERSION = 9833b1132bc2f468bf0b21072147820309a7f27a
+PYTHON_HWD_VERSION = 0bb62001a60a045d07564c107470919c0fedd303
 PYTHON_HWD_SOURCE = $(PYTHON_HWD_VERSION).tar.gz
 PYTHON_HWD_SITE = https://github.com/Outernet-Project/hwd/archive/
 PYTHON_HWD_LICENSE = GPL
