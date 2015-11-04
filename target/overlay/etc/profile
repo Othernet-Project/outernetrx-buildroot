@@ -20,4 +20,4 @@ export HISTFILESIZE=1000
 export PAGER='/bin/more '
 export EDITOR='/usr/bin/nano'
 export INPUTRC=/etc/inputrc
-
+export LANG='en_US.UTF-8'

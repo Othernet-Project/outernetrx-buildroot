@@ -33,6 +33,8 @@ if [ $(/bin/date +%s) -lt 1420070400 ]; then
   date -s 201501010000.00
 fi
 
+export LANG='en_US.UTF-8'
+
 # Start all init scripts in /etc/init.d
 # executing them in numerical order.
 #

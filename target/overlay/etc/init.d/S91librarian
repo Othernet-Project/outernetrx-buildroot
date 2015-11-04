@@ -1,7 +1,5 @@
 #!/bin/sh
 
-export LANG=en_US.UTF-8
-
 PID_FILE=/var/run/librarian.pid
 
 start() {
