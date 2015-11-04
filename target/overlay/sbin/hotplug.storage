@@ -35,8 +35,7 @@ EXT_PLATFORM_FILE = '.platform'
 
 # Services
 SERVICE_CMD = '/etc/init.d/{}'
-ONDD_SERVICE = 'S80ondd'
-LIBR_SERVICE = 'S91librarian'
+SERVICES = ['S80ondd', 'S90fsal', 'S91librarian']
 
 # Upgrade
 UPGRADE_FILE_EXT = '.pkg'
@@ -160,16 +159,16 @@ def start_service(service_name):
 @contextmanager
 def services_stopped():
     log_dbg('Stopping services')
-    stop_service(LIBR_SERVICE)
-    stop_service(ONDD_SERVICE)
+    for service in reversed(SERVICES):
+        stop_service(service)
     time.sleep(3)
     log_dbg('Services stopped')
     try:
         yield
     finally:
         log_dbg('Restarting services')
-        start_service(ONDD_SERVICE)
-        start_service(LIBR_SERVICE)
+        for service in SERVICES:
+            start_service(service)
         log_dbg('Services started')
 
 
@@ -295,8 +294,9 @@ def handle_storage(devname, label, fs, l):
 
 
 def handle_storage_removal(dev, label, l):
-    if get_mountpoint(dev):
-        if mount.umount(dev) != 0:
+    mdir = get_mountpoint(dev)
+    with services_stopped():
+        if mount.umount(mdir) != 0:
             raise RuntimeError('Failed to unmount {} ({})'.format(
                 dev, label or 'no label'))
 
