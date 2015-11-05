@@ -251,7 +251,8 @@ def use_ext(devname, mdir, fs):
 
         # Finally mount the data dir
         mount.umount(devname)
-        ret = mount.mount(devname, DATADIR, fs=fs, opts=MOUNT_OPTS[fs])
+        ret = mount.mount(devname, DATADIR, fs=fs, 
+                          opts=MOUNT_OPTS.get(fs, DEFAULT_MOUNT_OPTS))
         if ret != 0:
             raise RuntimeError('Failed to remount as data storage')
 
