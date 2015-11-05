@@ -21,7 +21,6 @@ stop() {
   if [ -f $PID_FILE ] ; then
     echo -n "Stopping FSAL: "
     kill $(cat $PID_FILE)
-    rm $PID_FILE
     echo "OK"
   fi
 }
