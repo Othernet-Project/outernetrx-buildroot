@@ -12,10 +12,13 @@ from subprocess import call, check_output as ocall, CalledProcessError
 import led
 import mount
 
-
+# General
 DEBUG = True
-MOUNT_BASE = '/mnt'
 CP = '/bin/cp'
+LOCALE = 'en_US.UTF-8'
+
+# Filesystems and mounting
+MOUNT_BASE = '/mnt'
 EXT_LABEL = 'ext_store'
 DATADIR = os.environ.get('OUTERNET_DATA', '/mnt/data/downloads')
 CHECK_PROGS = {
@@ -307,6 +310,13 @@ def handle_storage_removal(dev, label, l):
 
 
 def main():
+    # Set locale environment variable. Since this is a udev script, it has no
+    # access to environment variables other than device-specific ones as
+    # defined by udev. This means that locale is messed up for any process
+    # started by this script, including all processed started by
+    # ``subprocess.call`` and similar methods.
+    os.putenv('LANG', LOCALE)
+
     # Get basic data from the environment
     devname = os.environ.get('DEVNAME')
     fsusage = os.environ.get('ID_FS_USAGE')
