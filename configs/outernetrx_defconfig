@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-gb509ede-dirty Configuration
+# Buildroot 2014.11-g764e45d-dirty Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -242,7 +242,7 @@ BR2_ROOTFS_SKELETON_CUSTOM_PATH="target/skeleton"
 # BR2_TARGET_TZ_INFO is not set
 BR2_ROOTFS_USERS_TABLES=""
 BR2_ROOTFS_OVERLAY="target/overlay"
-BR2_ROOTFS_POST_BUILD_SCRIPT="target/collect_static.py"
+BR2_ROOTFS_POST_BUILD_SCRIPT="target/collect_static.sh"
 BR2_ROOTFS_POST_IMAGE_SCRIPT=""
 BR2_ROOTFS_POST_SCRIPT_ARGS=""
 
