@@ -40,6 +40,11 @@ EXT_PLATFORM_FILE = '.platform'
 # Services
 SERVICE_CMD = '/etc/init.d/{}'
 SERVICES = ['S80ondd', 'S90fsal', 'S91librarian']
+PIDFILES = {
+    'S80ondd': '/var/run/ondd.pid',
+    'S90fsal': '/var/run/fsal.pid',
+    'S91librarian': '/var/run/librarian.pid'
+}
 
 # Upgrade
 UPGRADE_FILE_EXT = '.pkg'
@@ -146,6 +151,10 @@ def check_fs(dev, fstype):
         log_warn('Filesystem may have errors that could not be fixed')
 
 
+def is_service_started(service_name):
+    return os.path.exists(PIDFILES[service_name])
+
+
 def stop_service(service_name):
     log_dbg('Stoppnig {}'.format(service_name))
     service = SERVICE_CMD.format(service_name)
@@ -166,15 +175,18 @@ def start_service(service_name):
 @contextmanager
 def services_stopped():
     log_dbg('Stopping services')
+    stopped = []
     for service in reversed(SERVICES):
-        stop_service(service)
+        if is_service_started(service):
+            stop_service(service)
+            stopped.insert(0, service)
     time.sleep(3)
     log_dbg('Services stopped')
     try:
         yield
     finally:
         log_dbg('Restarting services')
-        for service in SERVICES:
+        for service in stopped:
             start_service(service)
         log_dbg('Services started')
 
