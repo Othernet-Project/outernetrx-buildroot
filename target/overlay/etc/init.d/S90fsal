@@ -27,7 +27,7 @@ stop() {
 
 restart() {
   stop
-  /bin/sleep 1
+  /bin/sleep 10
   start
 }
 
