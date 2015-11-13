@@ -44,6 +44,11 @@ mount_start() {
     # Create the data volume if it does not exist
     mkubivol data 3584
     mountubivol data data
+    # Create directories
+    /bin/mkdir -p /mnt/data/downloads
+    /bin/mkdir -p /mnt/data/librarian
+    /bin/mkdir -p /mnt/data/fsal
+    /bin/mkdir -p /mnt/data/log
   fi
 }
 
