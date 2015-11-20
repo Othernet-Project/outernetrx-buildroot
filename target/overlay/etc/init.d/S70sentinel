@@ -1,0 +1,46 @@
+#!/bin/sh
+
+PID_FILE=/var/run/sentinel.pid
+
+start() {
+  [ ! -f $PID_FILE ] || exit 0
+  echo -n "Starting sentinel: "
+  /sbin/sentinel --conf /etc/sentinel.conf > /dev/null 2>&1 &
+  if [ $? ]; then
+    echo $! > $PID_FILE
+    echo "OK"
+  else
+    echo "FAILED"
+  fi
+}
+
+stop() {
+  if [ -f $PID_FILE ] ; then
+    echo -n "Stopping sentinel: "
+    kill $(cat $PID_FILE)
+    echo "OK"
+  fi
+}
+
+restart() {
+  stop
+  /bin/sleep 10
+  start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload)
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload}"
+    exit 1
+esac
+
+exit $?

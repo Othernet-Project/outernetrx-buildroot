@@ -1,0 +1,6 @@
+config BR2_PACKAGE_SENTINEL
+	bool "sentinel"
+	help
+      Process guardian for Outernet services
+
+	  https://github.com/Outernet-Project/sentinel/
