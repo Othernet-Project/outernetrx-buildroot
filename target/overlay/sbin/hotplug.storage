@@ -16,6 +16,8 @@ import mount
 # General
 DEBUG = True
 CP = '/bin/cp'
+MV = '/bin/mv'
+RM = '/bin/rm'
 LOCALE = 'en_US.UTF-8'
 
 # Filesystems and mounting
@@ -136,24 +138,14 @@ def set_ext_platform(mdir):
         f.write(get_platform())
 
 
-def ensure_dir(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-
-def movetree(src, dst):
-    ensure_dir(dst)
-    for item in glob.iglob(os.path.join(src, '*')):
-        shutil.move(item, dst)
-
-
 def relocate_data(mdir):
     for (src, dst) in MIGRATE:
         src_path = os.path.join(mdir, src)
         dst_path = os.path.join(mdir, dst)
         if os.path.exists(src_path):
             log_dbg('Copying {} into {}'.format(src_path, dst_path))
-            movetree(src_path, dst_path)
+            call([RM, dst_path])
+            call([MV, src_path, dst_path])
 
 
 def delete_obsolete(mdir):
