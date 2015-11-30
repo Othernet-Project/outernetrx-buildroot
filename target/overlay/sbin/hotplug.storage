@@ -146,6 +146,8 @@ def relocate_data(mdir):
             log_dbg('Copying {} into {}'.format(src_path, dst_path))
             call([RM, dst_path])
             call([MV, src_path, dst_path])
+        else:
+            log_dbg('Nothing to import in {}'.format(src_path))
 
 
 def delete_obsolete(mdir):
