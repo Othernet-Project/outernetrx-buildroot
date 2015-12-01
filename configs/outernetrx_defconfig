@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-gf37b012-dirty Configuration
+# Buildroot 2014.11-gf012742 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -316,6 +316,11 @@ BR2_PACKAGE_PYTHON_LIBRARIAN_CAPTIVE=y
 # Monitoring and reporting
 #
 BR2_PACKAGE_MONITORING=y
+
+#
+# Data processing
+#
+# BR2_PACKAGE_ONDD is not set
 
 #
 # Audio and video applications
