@@ -42,7 +42,8 @@ migrate_legacy() {
         rm -rf "$CONTENT"
     fi
     if [ -d "$FILES" ]; then
-        mv "$CONTENT"/* "$BASE"/
+        mv "$FILES"/* "$BASE"/
+        rm -rf "$FILES"
     fi
 }
 
