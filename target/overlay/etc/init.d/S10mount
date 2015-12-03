@@ -2,6 +2,12 @@
 
 MTD=/dev/$(grep \"data\" /proc/mtd | cut -d : -f 1)
 
+# Old stuff
+BASE=/mnt/data/downloads
+FILES=${BASE}/files
+CONTENT=${BASE}/conent
+CACHE=${BASE}/.cache
+
 hasubivol() {
   name=$1
   /usr/sbin/ubinfo -d 0 -N "$name" 1> /dev/null 2>&1
@@ -28,6 +34,18 @@ ismounted() {
   cat /proc/mounts | cut -f1 -d' ' | grep ^${mdir}$ 1> /dev/null
 }
 
+migrate_legacy() {
+    if [ -d "$CACHE" ]; then
+        rm -rf "$CACHE"
+    fi
+    if [ -d  "$CONTENT" ]; then
+        rm -rf "$CONTENT"
+    fi
+    if [ -d "$FILES" ]; then
+        mv "$CONTENT"/* "$BASE"/
+    fi
+}
+
 mount_start() {
   # Bail if no UBI volume
   [ -c /dev/ubi0 ] || exit 1
@@ -49,6 +67,7 @@ mount_start() {
     /bin/mkdir -p /mnt/data/librarian
     /bin/mkdir -p /mnt/data/fsal
     /bin/mkdir -p /mnt/data/log
+    migrate_legacy
   fi
 }
 
