@@ -5,7 +5,7 @@ MTD=/dev/$(grep \"data\" /proc/mtd | cut -d : -f 1)
 # Old stuff
 BASE=/mnt/data/downloads
 FILES=${BASE}/files
-CONTENT=${BASE}/conent
+CONTENT=${BASE}/content
 CACHE=${BASE}/.cache
 
 hasubivol() {
