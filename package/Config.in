@@ -36,6 +36,7 @@ comment "Monitoring and reporting"
 	source "package/monitoring/Config.in"
 comment "Data processing"
 	source "package/ondd/Config.in"
+	source "package/python-ondd-ipc/Config.in"
 comment "System services"
 	source "package/sentinel/Config.in"
 endmenu
