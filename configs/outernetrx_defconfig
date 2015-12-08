@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-g1a65317 Configuration
+# Buildroot 2014.11-g1d9975a-dirty Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -321,6 +321,7 @@ BR2_PACKAGE_MONITORING=y
 # Data processing
 #
 # BR2_PACKAGE_ONDD is not set
+BR2_PACKAGE_PYTHON_ONDD_IPC=y
 
 #
 # System services
