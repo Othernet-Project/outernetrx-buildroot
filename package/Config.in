@@ -36,6 +36,8 @@ comment "Monitoring and reporting"
 	source "package/monitoring/Config.in"
 comment "Data processing"
 	source "package/ondd/Config.in"
+comment "System services"
+	source "package/sentinel/Config.in"
 endmenu
 
 menu "Audio and video applications"
