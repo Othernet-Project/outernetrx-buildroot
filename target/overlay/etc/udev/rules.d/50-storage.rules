@@ -1,0 +1,1 @@
+ENV{DEVTYPE}=="partition", RUN+="/sbin/hotplug.storage"

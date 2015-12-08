@@ -1,0 +1,102 @@
+#!/bin/sh
+
+MTD=/dev/$(grep \"data\" /proc/mtd | cut -d : -f 1)
+
+# Old stuff
+BASE=/mnt/data/downloads
+FILES=${BASE}/files
+CONTENT=${BASE}/content
+CACHE=${BASE}/.cache
+
+hasubivol() {
+  name=$1
+  /usr/sbin/ubinfo -d 0 -N "$name" 1> /dev/null 2>&1
+}
+
+mkubivol() {
+  name=$1
+  size=$2
+  hasubivol "$name" && return 0
+  /usr/sbin/ubimkvol /dev/ubi0 -N "$name" -s "${size}MiB" || exit 1
+}
+
+mountubivol() {
+  name=$1
+  grp=$2
+  /bin/echo "Mounting ubi0:${name} on /mnt/${name}"
+  /bin/mount -o noatime -t ubifs "ubi0:${name}" "/mnt/${name}" || exit 1
+  /bin/chmod 2775 "/mnt/${name}"
+  /bin/chgrp "${grp}" "/mnt/${name}"
+}
+
+ismounted() {
+  mdir=$1
+  cat /proc/mounts | cut -f1 -d' ' | grep ^${mdir}$ 1> /dev/null
+}
+
+migrate_legacy() {
+    if [ -d "$CACHE" ]; then
+        rm -rf "$CACHE"
+    fi
+    if [ -d  "$CONTENT" ]; then
+        rm -rf "$CONTENT"
+    fi
+    if [ -d "$FILES" ]; then
+        mv "$FILES"/* "$BASE"/
+        rm -rf "$FILES"
+    fi
+}
+
+mount_start() {
+  # Bail if no UBI volume
+  [ -c /dev/ubi0 ] || exit 1
+
+  # Mount the persist volume
+  if ! ismounted /mnt/persist ; then
+    # Create the persist volume if it does not exist
+    mkubivol persist 32
+    mountubivol persist config
+  fi
+
+  # Mount the data volume
+  if ! ismounted /mnt/data ; then
+    # Create the data volume if it does not exist
+    mkubivol data 3584
+    mountubivol data data
+    # Create directories
+    /bin/mkdir -p /mnt/data/downloads
+    /bin/mkdir -p /mnt/data/librarian
+    /bin/mkdir -p /mnt/data/fsal
+    /bin/mkdir -p /mnt/data/log
+    migrate_legacy
+  fi
+}
+
+mount_stop() {
+  if grep /mnt/data /proc/mounts 1> /dev/null ; then
+    /bin/echo "Unmounting /mnt/data"
+    /bin/umount -f /mnt/data
+  fi
+  if grep /mnt/persist /proc/mounts 1> /dev/null ; then
+    /bin/echo "Unmounting /mnt/persist"
+    /bin/umount -f /mnt/persist
+  fi
+
+  if [ -c /dev/ubi0 ]; then
+    /usr/sbin/ubidetach -p $MTD
+  fi
+}
+
+case "$1" in
+  start)
+    mount_start
+    ;;
+  stop)
+    mount_stop
+    ;;
+  restart|reload)
+    ;;
+  *)
+    echo -n "usage: $0 {start|stop|restart|reload}"
+    ;;
+esac

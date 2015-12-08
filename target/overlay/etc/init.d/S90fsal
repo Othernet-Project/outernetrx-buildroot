@@ -1,0 +1,49 @@
+#!/bin/sh
+
+PID_FILE=/var/run/fsal.pid
+DATA_DIR=/mnt/data/fsal
+
+start() {
+  [ ! -f $PID_FILE ] || exit 0
+  echo -n "Starting FSAL: "
+  mkdir -p $DATA_DIR
+  /usr/bin/fsal-daemon --pid-file $PID_FILE --conf /etc/fsal.ini \
+      > /dev/null 2>&1 &
+  if [ $? ]; then
+    echo $! > $PID_FILE
+    echo "OK"
+  else
+    echo "FAILED"
+  fi
+}
+
+stop() {
+  if [ -f $PID_FILE ] ; then
+    echo -n "Stopping FSAL: "
+    kill $(cat $PID_FILE)
+    echo "OK"
+  fi
+}
+
+restart() {
+  stop
+  /bin/sleep 10
+  start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload)
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload}"
+    exit 1
+esac
+
+exit $?
