@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-g1d9975a-dirty Configuration
+# Buildroot 2014.11-gee5755f-dirty Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -859,6 +859,7 @@ BR2_PACKAGE_PYTHON_HASHLIB=y
 # external python modules
 #
 # BR2_PACKAGE_PYTHON_BABEL is not set
+BR2_PACKAGE_PYTHON_BITARRAY=y
 BR2_PACKAGE_PYTHON_BOTTLE=y
 BR2_PACKAGE_PYTHON_BOTTLE_FDSEND=y
 BR2_PACKAGE_PYTHON_BOTTLE_UTILS=y
