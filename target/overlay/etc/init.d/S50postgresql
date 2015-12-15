@@ -11,7 +11,7 @@ umask 077
 if [ ! -f $POSTGRES_DBDIR/PG_VERSION ]; then
     echo "Initializing postgresql database..."
     mkdir -p $POSTGRES_DBDIR
-    chown postgres.postgres $POSTGRES_DBDIR
+    chown $POSTGRES_USER.$POSTGRES_USER $POSTGRES_DBDIR
     chmod 700 $POSTGRES_DBDIR
     su - postgres -c "/usr/bin/pg_ctl initdb -D $POSTGRES_DBDIR"
     echo "done"
