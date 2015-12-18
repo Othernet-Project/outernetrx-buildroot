@@ -31,6 +31,7 @@ comment "Content openers"
 	source "package/python-librarian-opener-video/Config.in"
 comment "Misc"
 	source "package/python-librarian-captive/Config.in"
+	source "package/python-librarian-analytics/Config.in"
 endif
 comment "Monitoring and reporting"
 	source "package/monitoring/Config.in"
