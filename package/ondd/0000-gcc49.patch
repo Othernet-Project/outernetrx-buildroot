@@ -1,9 +1,11 @@
 diff --git a/Makefile b/Makefile
-index 00ca1cf..a5e2e92 100644
+index 9a9d70f..fbdc60c 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1,5 +1,5 @@
- CC		 = gcc
+@@ -2,7 +2,7 @@ TOP_DIR := $(shell pwd)
+ -include $(TOP_DIR)/../Makefile.in
+ 
+ CC		 = $(CROSS_COMPILE)gcc
 -CFLAGS  += -Wall -pipe
 +CFLAGS  += -Wall -pipe -fpermissive
  LIBS     = -lrt -lcrypto -lz -lstdc++

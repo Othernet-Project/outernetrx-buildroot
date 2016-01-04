@@ -4,13 +4,10 @@
 #
 ################################################################################
 
-MONITORING_VERSION = 9e8488e1e2574067e5a3656ebe7029ddcc962c42
+MONITORING_VERSION = b89652c7217832e5489d24480477fc5e6038fcc7
 MONITORING_SOURCE = $(MONITORING_VERSION).tar.gz
 MONITORING_SITE = https://github.com/Outernet-Project/monitoring/archive
 MONITORING_LICENSE = GPL
+MONITORING_SETUP_TYPE = setuptools
 
-define MONITORING_INSTALL_TARGET_CMDS
-	$(INSTALL) -m 755 -D $(@D)/client/monitor.py $(TARGET_DIR)/usr/sbin/monitor
-endef
-
-$(eval $(generic-package))
+$(eval $(python-package))

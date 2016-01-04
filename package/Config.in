@@ -521,6 +521,7 @@ endif
 if BR2_PACKAGE_PYTHON || BR2_PACKAGE_PYTHON3
 menu "external python modules"
 	source "package/python-babel/Config.in"
+	source "package/python-bitarray/Config.in"
 	source "package/python-bottle/Config.in"
 	source "package/python-bottle-fdsend/Config.in"
 	source "package/python-bottle-utils/Config.in"
