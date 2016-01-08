@@ -21,6 +21,8 @@ fi
 /bin/echo 250 > /sys/class/leds/status/delay_on
 /bin/echo 250 > /sys/class/leds/status/delay_off
 
+. /etc/init.d/hdmi_config
+
 # Set the hostname.
 if [ -r /etc/hostname ]; then
   /bin/hostname $(/bin/cat /etc/hostname | cut -f1 -d .)
